@@ -1,28 +1,46 @@
 # Azure-Terraform
 Install Azure CLI with yum
 For Linux distributions with yum such as RHEL, Fedora, or CentOS, there's a package for the Azure CLI. This package has been tested with RHEL 7, Fedora 19 and higher, and CentOS 7.
- Note
+
+
+Note
 To install the CLI, you need the following software:
 •	Python 2.7x or Python 3.x
 •	OpenSSL 1.0.2
+
 Install
+
 1.	Import the Microsoft repository key.
+
 rpm --import https://packages.microsoft.com/keys/microsoft.asc
+
 2.	Create local azure-cli repository information.
+
 sh -c 'echo -e "[azure-cli]\nname=Azure CLI\nbaseurl=https://packages.microsoft.com/yumrepos/azure-cli\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/azure-cli.repo'
+
 3.	Install with the yum install command.
+
 sudo yum install azure-cli
+
 You can then run the Azure CLI with the az command. To sign in, use az login command.
 1.	Run the login command.
 az login
+
 If the CLI can open your default browser, it will do so and load a sign-in page.
 Otherwise, you need to open a browser page and follow the instructions on the command line to enter an authorization code after navigating to https://aka.ms/devicelogin in your browser.
+
+
 2.	Sign in with your account credentials in the browser.
 To learn more about different authentication methods, see Sign in with Azure CLI.
+
 Update
 Update the Azure CLI with the yum update command.
 bashCopy
 sudo yum update azure-cli
+
+
+
+
 
 The following section creates a resource group named myResourceGroup in the eastus location:
 
@@ -35,6 +53,12 @@ resource "azurerm_resource_group" "myterraformgroup" {
     }
 }
 In additional sections, you reference the resource group with ${azurerm_resource_group.myterraformgroup.name}.
+
+
+
+
+
+
 
 Create virtual network
 The following section creates a virtual network named myVnet in the 10.0.0.0/16 address space:
@@ -57,6 +81,11 @@ resource "azurerm_subnet" "myterraformsubnet" {
     virtual_network_name = "${azurerm_virtual_network.myterraformnetwork.name}"
     address_prefix       = "10.0.2.0/24"
 }
+
+
+
+
+
 Create public IP address
 To access resources across the Internet, create and assign a public IP address to your VM. The following section creates a public IP address named myPublicIP:
 
@@ -70,6 +99,8 @@ resource "azurerm_public_ip" "myterraformpublicip" {
         environment = "Terraform Demo"
     }
 }
+
+
 Create Network Security Group
 Network Security Groups control the flow of network traffic in and out of your VM. The following section creates a network security group named myNetworkSecurityGroup and defines a rule to allow SSH traffic on TCP port 22:
 
@@ -95,6 +126,9 @@ resource "azurerm_network_security_group" "myterraformnsg" {
     }
 }
 
+
+
+
 Create virtual network interface card
 A virtual network interface card (NIC) connects your VM to a given virtual network, public IP address, and network security group. The following section in a Terraform template creates a virtual NIC named myNIC connected to the virtual networking resources you have created:
 
@@ -116,6 +150,8 @@ resource "azurerm_network_interface" "myterraformnic" {
     }
 }
 
+
+
 Create storage account for diagnostics
 To store boot diagnostics for a VM, you need a storage account. These boot diagnostics can help you troubleshoot problems and monitor the status of your VM. The storage account you create is only to store the boot diagnostics data. As each storage account must have a unique name, the following section generates some random text:
 
@@ -127,6 +163,12 @@ resource "random_id" "randomId" {
 
     byte_length = 8
 }
+
+
+
+
+
+
 Now you can create a storage account. The following section creates a storage account, with the name based on the random text generated in the preceding step:
 
 resource "azurerm_storage_account" "mystorageaccount" {
@@ -140,6 +182,8 @@ resource "azurerm_storage_account" "mystorageaccount" {
         environment = "Terraform Demo"
     }
 }
+
+
 
 Create virtual machine
 The final step is to create a VM and use all the resources created. The following section creates a VM named myVMand attaches the virtual NIC named myNIC. The latest Ubuntu 16.04-LTS image is used, and a user named azureuser is created with password authentication disabled.
